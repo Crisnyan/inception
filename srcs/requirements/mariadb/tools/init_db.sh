@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+if [ ! -d "/var/lib/mysql/mysql" ]; then
+    echo "INSTALLING BASE MARIADB TABLES..."
+    mysql_install_db --user=mysql --datadir=/var/lib/mysql
+fi
+
 if [ ! -d "/var/lib/mysql/${MYSQL_DATABASE}" ]; then
 	echo "INITIALIZING MARIADB DATABASE..."
 
@@ -17,7 +22,7 @@ if [ ! -d "/var/lib/mysql/${MYSQL_DATABASE}" ]; then
 	mysql -u root --skip-password -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${DB_USER_PASS}';"
 	mysql -u root --skip-password -e "GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';"
 
-	mysql -u root --skip-password -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASS}'"
+	mysql -u root --skip-password -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASS}';"
 
 	mysql -u root -p"${DB_ROOT_PASS}" -e "FLUSH PRIVILEGES;"
 
