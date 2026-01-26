@@ -1,0 +1,77 @@
+services:
+  nginx:
+    build:
+      context: ./requirements/nginx
+      args:
+        DOMAIN_NAME: ${DOMAIN_NAME}
+    image: nginx
+    container_name: nginx
+    ports:
+      - "443:443"
+    restart: always
+    networks:
+      - inception_net
+    depends_on:
+      - wordpress
+    volumes:
+      - wordpress_data:/var/www/html:ro
+      - ./requirements/nginx/conf:/etc/nginx/conf.d:ro
+
+  mariadb:
+    build: ./requirements/mariadb
+    image: mariadb
+    container_name: mariadb
+    restart: always
+    networks:
+      - inception_net
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    env_file:
+      - .env
+    secrets:
+      - db_root_password
+      - db_password
+  
+  wordpress:
+    build: ./requirements/wordpress
+    image: wordpress
+    container_name: wordpress
+    restart: always
+    networks:
+      - inception_net
+    volumes:
+      - wordpress_data:/var/www/html
+    env_file:
+      - .env
+    secrets:
+      - db_root_password
+      - db_password
+    depends_on:
+      - mariadb
+
+volumes:
+  wordpress_data:
+    name: wordpress_data
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/cmanica-/data/WordPress
+  mariadb_data:
+    name: mariadb_data
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/cmanica-/data/DB
+
+networks:
+  inception_net:
+    name: inception_net
+    driver: bridge
+
+secrets:
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  db_password:
+    file: ../secrets/db_password.txt
