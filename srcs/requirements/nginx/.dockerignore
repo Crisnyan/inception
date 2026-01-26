@@ -1,0 +1,15 @@
+*.log
+*.tmp
+*.swp
+*.bak
+
+tools/
+conf/*.local
+
+../../secrets/
+.env
+
+.git
+.gitignore
+Dockerfile
+.dockerignore
