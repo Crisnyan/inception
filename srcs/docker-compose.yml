@@ -15,7 +15,7 @@ services:
       - wordpress
     volumes:
       - wordpress_data:/var/www/html:ro
-      - ./requirements/nginx/conf:/etc/nginx/conf.d:ro
+      - ./requirements/nginx/conf:/etc/nginx/http.d:ro
 
   mariadb:
     build: ./requirements/mariadb

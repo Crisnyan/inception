@@ -10,7 +10,7 @@ if [ ! -f ./wp-config.php ]; then
   echo "WAITING FOR MARIADB TO BE READY..."
   while ! mysqladmin ping -h mariadb -u"$MYSQL_USER" -p"$(cat /run/secrets/db_password)" --silent; do
       echo "MARIADB IS NOT READY YET..."
-      sleep 2
+      sleep 10
   done
 
   echo "CONFIGURING WORDPRESS..."
@@ -44,4 +44,4 @@ if [ ! -f ./wp-config.php ]; then
 fi
 
 echo "STARTING PHP-FPM..."
-exec /usr/sbin/php-fpm7.4 -F
+exec php-fpm83 -F
