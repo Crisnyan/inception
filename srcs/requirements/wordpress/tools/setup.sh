@@ -1,8 +1,7 @@
- #!/bin/sh
+#!/bin/sh
 set -e
 
 echo "STARTING WORDPRESS CONTAINER..."
-
 db_pass=$(cat /run/secrets/db_password)
 
 admin_pass_file=${WORDPRESS_ADMIN_PASS_FILE:-/run/secrets/db_password}
