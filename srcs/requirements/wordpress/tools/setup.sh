@@ -2,12 +2,15 @@
 set -e
 
 echo "STARTING WORDPRESS CONTAINER..."
+[ -f /run/secrets/db_password ] || exit 1
 db_pass=$(cat /run/secrets/db_password)
 
 admin_pass_file=${WORDPRESS_ADMIN_PASS_FILE:-/run/secrets/db_password}
+[ -f "$admin_pass_file" ] || exit 1
 admin_pass=$(cat "$admin_pass_file")
 
 user_pass_file=${WORDPRESS_USER_PASS_FILE:-/run/secrets/db_password}
+[ -f "$user_pass_file" ] || exit 1
 user_pass=$(cat "$user_pass_file")
 
 if [ ! -f ./wp-config.php ]; then
