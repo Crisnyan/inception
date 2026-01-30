@@ -1,7 +1,15 @@
-#!/bin/sh
+ #!/bin/sh
 set -e
 
 echo "STARTING WORDPRESS CONTAINER..."
+
+db_pass=$(cat /run/secrets/db_password)
+
+admin_pass_file=${WORDPRESS_ADMIN_PASS_FILE:-/run/secrets/db_password}
+admin_pass=$(cat "$admin_pass_file")
+
+user_pass_file=${WORDPRESS_USER_PASS_FILE:-/run/secrets/db_password}
+user_pass=$(cat "$user_pass_file")
 
 if [ ! -f ./wp-config.php ]; then
   echo "DOWNLOADING WORDPRESS..."
@@ -28,7 +36,7 @@ if [ ! -f ./wp-config.php ]; then
     --url="https://$DOMAIN_NAME" \
     --title="$WORDPRESS_TITLE" \
     --admin_user=$WORDPRESS_ADMIN \
-    --admin_password=$WORDPRESS_ADMIN_PASS_FILE \
+    --admin_password=$admin_pass \
     --admin_email=$WORDPRESS_ADMIN_EMAIL \
     --skip-email \
     --allow-root
@@ -36,7 +44,7 @@ if [ ! -f ./wp-config.php ]; then
   echo "CREATING ADDITIONAL USER..."
   wp user create $WORDPRESS_USER $WORDPRESS_USER_EMAIL \
     --role=author \
-    --user_pass=$WORDPRESS_USER_PASS_FILE \
+    --user_pass=$user_pass \
     --allow-root
 
   echo "INSTALLING AND ACTIVATING THEME..."
@@ -44,4 +52,4 @@ if [ ! -f ./wp-config.php ]; then
 fi
 
 echo "STARTING PHP-FPM..."
-exec php-fpm83 -F
+exec php-fpm83 -F 
