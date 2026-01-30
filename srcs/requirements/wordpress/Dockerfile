@@ -17,12 +17,17 @@ RUN apk update && apk add --no-cache \
 	php83-tokenizer \
 	php83-iconv \
 	php83-gd \
+	php83-ctype \
+	php83-session \
+	php83-intl \
 	mariadb-client \
 	curl \
 	wget \
 	tar \
 	unzip \
 	less 
+
+RUN sed -i 's/memory_limit = .*/memory_limit = 512M/' /etc/php*/php.ini
 
 RUN ln -fs /usr/bin/php83 /usr/bin/php
 
