@@ -21,14 +21,11 @@ clean:
 fclean:
 	$(DC) down -v --rmi all --remove-orphans
 	sudo rm -rf $(DATA)
-	docker system prune --volumes
+	docker system prune --volumes -f
 
 restart: clean all
 
 re: fclean all
-
-dangling:
-	docker system prune --volumes
 
 help:
 	@echo "Available commands:"
@@ -45,4 +42,4 @@ help:
 
 h: help
 
-.PHONY: all build up down kill clean fclean restart re help h dangling
+.PHONY: all build up down kill clean fclean restart re help h
